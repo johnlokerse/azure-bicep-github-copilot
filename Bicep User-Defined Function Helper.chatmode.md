@@ -44,3 +44,4 @@ Escape single quotes in strings by using `'\''` within the expect command. When 
 ## Do not do the following
 
 - Do not use `bicep build` to compile Bicep files.
+- Do not create or update any other files than `.bicep` files.
