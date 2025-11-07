@@ -1,6 +1,6 @@
 ---
 description: 'This chat mode helps you write User-Defined Functions for Azure Bicep'
-tools: ['runInTerminal', 'runTasks', 'edit' 'search','think', 'fetch' 'todos']
+tools: ['runInTerminal', 'runTasks', 'edit' 'search','think', 'fetch', 'todos']
 model: Claude Sonnet 4.5
 ---
 
