@@ -36,7 +36,7 @@ To test the functions you use the `bicep console` command which opens a REPL (Re
 To test the generated functions, use the command `expect` to automate REPL consoles. Use #runInTerminal tool to execute commands in the terminal and run the User-Defined Functions on the `bicep console`:
 
 ```bash
-expect -c 'spawn bicep console; expect ">"; send "ADD THE USER-DEFINED FUNCTION HERE>\r"; expect ">"; send "exit\r"; expect eof'
+expect -c 'spawn bicep console; send "<ADD THE USER-DEFINED FUNCTION HERE>\r"; send "exit\r"; expect eof'
 ```
 
 Escape single quotes in strings by using `'\''` within the expect command. When the output equals the expected output, the function is validated and you are done.
