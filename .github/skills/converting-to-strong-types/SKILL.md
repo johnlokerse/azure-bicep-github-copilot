@@ -9,42 +9,27 @@ Replaces loose `object` and `array` parameter types with strong alternatives for
 
 ## Conversion Workflow
 
-Copy and track progress:
+1. **Identify loose types**
+   - Search for `param <name> object` and `param <name> array` declarations.
 
-```
-Conversion Progress:
-- [ ] Step 1: Identify loose types
-- [ ] Step 2: Analyze parameter usage
-- [ ] Step 3: Choose conversion strategy
-- [ ] Step 4: Define types and update parameters
-- [ ] Step 5: Validate with bicep build
-```
+2. **Analyze parameter usage**
+   - Examine how the parameter is used in the template to determine expected structure.
 
-**Step 1: Identify loose types**
+3. **Choose conversion strategy**
 
-Search for `param <name> object` and `param <name> array` declarations.
-
-**Step 2: Analyze parameter usage**
-
-Examine how the parameter is used in the template to determine expected structure.
-
-**Step 3: Choose conversion strategy**
-
-| Pattern | Strategy |
-|---------|----------|
-| Array of primitives | `string[]`, `int[]`, `bool[]` |
-| Array with constrained values | `('value1' \| 'value2')[]` |
+| Pattern                           | Strategy                                     |
+| --------------------------------- | -------------------------------------------- |
+| Array of primitives               | `string[]`, `int[]`, `bool[]`                |
+| Array with constrained values     | `('value1' \| 'value2')[]`                   |
 | Object matching resource property | `resourceInput<'Type@Version'>.properties.X` |
-| Custom object structure | User-defined type with `type` keyword |
-| Array of objects | User-defined type with `[]` suffix |
+| Custom object structure           | User-defined type with `type` keyword        |
+| Array of objects                  | User-defined type with `[]` suffix           |
 
-**Step 4: Define types and update parameters**
+4. **Define types and update parameters**
+   - Place type definitions above parameters.
 
-Place type definitions above parameters. Add `@description()` decorators.
-
-**Step 5: Validate**
-
-Run `bicep build <file>` to verify syntax and type correctness.
+5. **Validate**
+   - Run command `bicep build <.bicep file> --stdout --no-restore` to verify syntax and type correctness.
 
 ## Quick Reference
 
@@ -77,16 +62,6 @@ type subnetType = {
 param subnets subnetType[]
 ```
 
-### Resource-Derived Types
-
-```bicep
-// Derive from Azure schema (Bicep 0.34.1+)
-type accountKind = resourceInput<'Microsoft.Storage/storageAccounts@2024-01-01'>.kind
-param storageProps resourceInput<'Microsoft.Storage/storageAccounts@2024-01-01'>.properties
-```
-
-**For full resource-derived type details**: See [RESOURCE-DERIVED.md](RESOURCE-DERIVED.md)
-
 ## Type Best Practices
 
 - Use `?` for optional properties: `description: string?`
@@ -95,19 +70,14 @@ param storageProps resourceInput<'Microsoft.Storage/storageAccounts@2024-01-01'>
 - Use constraints: `@minLength()`, `@maxLength()`, `@minValue()`, `@maxValue()`
 - Compose complex types from simpler types
 
-## Common Patterns
-
-**For ready-to-use type definitions**: See [PATTERNS.md](PATTERNS.md)
-
-Includes: tags, access policies, subnets, diagnostic settings, role assignments, private endpoints.
-
 ## MCP Tools
 
-| Tool | Purpose |
-|------|---------|
-| `Bicep:get_bicep_best_practices` | Current best practices |
-| `Bicep:get_az_resource_type_schema` | Schema for resource-derived types |
-| `Bicep:list_az_resource_types_for_provider` | Available types and API versions |
+| Tool                                        | Purpose                             |
+| ------------------------------------------- | ----------------------------------- |
+| `Bicep:get_bicep_best_practices`            | Current best practices              |
+| `Bicep:get_az_resource_type_schema`         | Schema for resource-derived types   |
+| `Bicep:list_az_resource_types_for_provider` | Available types and API versions    |
+| `Bicep:list_avm_metadata`                   | Metadata for Azure Verified Modules |
 
 ## Edge Cases
 
@@ -115,4 +85,58 @@ Includes: tags, access policies, subnets, diagnostic settings, role assignments,
 
 **Mixed-type arrays**: Use union `(string | int | bool)[]`
 
-**Backward compatibility**: Use optional types `?` for new properties
+**Optionality and backwards compatibility**: Use optional types `?` for new properties
+
+## Resource-Derived Types
+
+Use `resourceInput<>` and `resourceOutput<>` to derive types directly from Azure resource schemas. Prefer this approach over custom user-defined types.
+
+### Syntax
+
+```bicep
+resourceInput<'<resourceType>@<apiVersion>'>   // Writable properties
+resourceOutput<'<resourceType>@<apiVersion>'>  // Readable properties (includes computed)
+```
+
+### When to Use
+
+- Parameter must match resource property structure exactly
+- Want to avoid maintaining custom types that mirror resource properties
+
+## Examples
+
+### Full Properties Block
+
+```bicep
+param storageAccountProps resourceInput<'Microsoft.Storage/storageAccounts@2023-01-01'>.properties = {
+  accessTier: 'Hot'
+  minimumTlsVersion: 'TLS1_2'
+  allowBlobPublicAccess: false
+  supportsHttpsTrafficOnly: true
+}
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
+  name: 'mystorageacct'
+  location: resourceGroup().location
+  sku: { name: 'Standard_LRS' }
+  kind: 'StorageV2'
+  properties: storageAccountProps
+}
+```
+
+### Output Types
+
+```bicep
+output endpoints resourceOutput<'Microsoft.Storage/storageAccounts@2024-01-01'>.properties.primaryEndpoints
+```
+
+### Do not do this
+
+Do not use a type definition for resource-derived types but define them directly in parameters or outputs.
+
+```bicep
+type managedRulesDefinitionType = resourceInput<'Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2024-07-01'>.properties.managedRules
+type customRulesType = resourceInput<'Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2024-07-01'>.properties.customRules
+type policySettingsType = resourceInput<'Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2024-07-01'>.properties.policySettings
+type wafPolicyTagsType = resourceInput<'Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2024-07-01'>.tags
+```
