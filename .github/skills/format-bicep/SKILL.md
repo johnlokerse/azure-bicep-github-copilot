@@ -135,11 +135,13 @@ When formatting a Bicep file, perform these steps in order:
 
 4. **Run bicep format**
 
-```bash
-   bicep format <.bicep file>
-```
+   - Run command: `bicep format <.bicep file>`
 
-5. **Validate the result**
+5. **Remove commented code**
+   - Delete any commented-out code blocks
+   - Retain comments that provide context or explanations
+
+6. **Validate the result**
    - Ensure no syntax errors were introduced
    - Verify the file compiles successfully
 
