@@ -12,7 +12,6 @@ resourceOutput<'<resourceType>@<apiVersion>'>  // Readable properties (includes 
 ## When to Use
 
 - Parameter must match resource property structure exactly
-- Need compile-time validation against Azure schema
 - Want to avoid maintaining custom types that mirror resource properties
 
 ## Examples
@@ -65,10 +64,6 @@ Use MCP tools:
 - `Bicep:list_az_resource_types_for_provider` - List all types for a provider
 - `Bicep:get_az_resource_type_schema` - Get full schema for a resource type
 
-## resourceInput vs resourceOutput
+Identify if the user uses Azure Verified Modules. This can be determined by checking if the module reference starts with `br/public:avm/res/`. If this is the case, then the parameter must match the type defined in the raw `main.bicep` url of the module. To retreive this use MCP tool:
 
-| Aspect | resourceInput<> | resourceOutput<> |
-|--------|-----------------|------------------|
-| Properties | Writable only | Readable (includes computed) |
-| Use case | Parameters, variables for input | Output declarations |
-| Example | accessTier, sku | provisioningState, endpoints |
+- `Bicep:list_avm_metadata` - Lists the metadata for Azure Verified Modules including the raw `main.bicep` url.
