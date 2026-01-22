@@ -89,7 +89,7 @@ param subnets subnetType[]
 
 ## Resource-Derived Types
 
-Use `resourceInput<>` and `resourceOutput<>` to derive types directly from Azure resource schemas. Prefer this approach over custom user-defined types.
+Use `resourceInput<>` and `resourceOutput<>` to derive types directly from Azure resource schemas. Prioritise this approach over custom user-defined types.
 
 ### Syntax
 
