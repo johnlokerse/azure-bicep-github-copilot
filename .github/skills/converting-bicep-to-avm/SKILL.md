@@ -1,6 +1,6 @@
 ---
 name: converting-bicep-to-avm
-description: Converts raw Bicep resource definitions to Azure Verified Modules (AVM). Use when user asks to convert to AVM, replace resources with modules, use verified modules, or modernize bicep templates.
+description: Converts Bicep resource definitions to Azure Verified Modules (AVM). Use when user asks to convert to AVM, replace resources with modules, use verified modules, or modernize bicep templates.
 ---
 
 # Converting Bicep to AVM Skill
@@ -23,7 +23,6 @@ Call `Bicep:list_avm_metadata` MCP tool to get available Azure Verified Modules 
 
 ```bicep
 module <symbolicName> 'br/public:avm/res/<provider>/<resource>:<version>' = {
-  name: '<deploymentName>'
   params: {
     name: <resourceName>
     location: <location>
@@ -50,7 +49,7 @@ module <symbolicName> 'br/public:avm/res/<provider>/<resource>:<version>' = {
 
 ### Common Patterns
 
-| Raw Resource | AVM Parameter |
+| Resource | AVM Parameter |
 |--------------|---------------|
 | `properties.sku.name` | `skuName` |
 | `properties.sku.tier` | Often bundled in `skuName` |
@@ -62,6 +61,7 @@ module <symbolicName> 'br/public:avm/res/<provider>/<resource>:<version>' = {
 ### AVM Adds Common Features
 
 AVM modules often include built-in support for:
+
 - Diagnostic settings (`diagnosticSettings`)
 - Role assignments (`roleAssignments`)
 - Private endpoints (`privateEndpoints`)
@@ -72,7 +72,7 @@ AVM modules often include built-in support for:
 
 If no AVM module exists:
 
-1. Keep the raw resource definition
+1. Keep the resource definition
 2. Add comment: `// TODO: No AVM module available for <resourceType>`
 3. Check for pattern modules (`avm/ptn/*`) as alternatives
 
@@ -88,7 +88,7 @@ output keyVaultUri string = keyVault.properties.vaultUri
 output keyVaultUri string = keyVaultModule.outputs.uri
 ```
 
-Note: AVM output names differ from raw properties — check module documentation.
+Note: AVM output names differ from properties — check module documentation.
 
 ## Conversion Report Format
 

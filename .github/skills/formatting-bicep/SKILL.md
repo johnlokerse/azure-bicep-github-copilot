@@ -1,6 +1,6 @@
 ---
-name: format-bicep
-description: Formats Bicep code for readability and consistency.
+name: formatting-bicep
+description: Format Bicep code for readability and consistency.
 ---
 
 # Format Bicep

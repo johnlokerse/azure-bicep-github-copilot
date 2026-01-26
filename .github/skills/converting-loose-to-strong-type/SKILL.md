@@ -1,5 +1,5 @@
 ---
-name: converting-to-strong-types
+name: converting-loose-to-strong-type
 description: Converts loosely typed Bicep parameters using object or array to strongly typed alternatives like string[], user-defined types, or resource-derived types. Use when user mentions type safety, weak typing, object parameters, array parameters, resourceInput, resourceOutput, or asks to improve parameter definitions.
 ---
 
