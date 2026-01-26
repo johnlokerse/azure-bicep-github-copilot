@@ -1,5 +1,5 @@
 ---
-name: running-bicep-in-console
+name: run-bicep-in-console
 description: Validates Bicep functions using bicep console with piped input. Use when user asks to test, validate, or run Bicep functions, or wants to verify function behavior with test cases.
 ---
 

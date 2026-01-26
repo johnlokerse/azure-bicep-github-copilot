@@ -1,5 +1,5 @@
 ---
-name: converting-bicep-to-avm
+name: convert-bicep-to-avm
 description: Converts Bicep resource definitions to Azure Verified Modules (AVM). Use when user asks to convert to AVM, replace resources with modules, use verified modules, or modernize bicep templates.
 ---
 

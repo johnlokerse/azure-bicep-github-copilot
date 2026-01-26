@@ -1,5 +1,5 @@
 ---
-name: formatting-bicep
+name: format-bicep
 description: Format Bicep code for readability and consistency.
 ---
 
